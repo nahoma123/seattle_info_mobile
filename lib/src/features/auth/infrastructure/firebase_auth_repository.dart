@@ -120,10 +120,18 @@ class FirebaseAuthRepository implements AuthRepository {
         // ),
       );
 
+      // Ensure firebase_auth is imported (it should be already)
+      // import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
+      // Then use fb_auth.AppleAuthProvider or just AppleAuthProvider if no conflict
+
+      final String? rawNonce = credential.nonce; // Capture nonce if available
+      
       final OAuthCredential oauthCredential = OAuthCredential(
-        providerId: 'apple.com', // This is important
-        idToken: credential.identityToken, // This is the JWT from Apple
-        accessToken: credential.authorizationCode, // For some flows, might be different
+        providerId: AppleAuthProvider.PROVIDER_ID, // Static constant for 'apple.com'
+        signInMethod: AppleAuthProvider.APPLE_SIGN_IN_METHOD, // Static constant for 'apple.com'
+        idToken: credential.identityToken,
+        rawNonce: rawNonce, // Pass the nonce obtained from Apple
+        accessToken: credential.authorizationCode, 
       );
        
       final userCredential = await _firebaseAuth.signInWithCredential(oauthCredential);
