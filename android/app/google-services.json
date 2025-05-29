@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1060028705881",
+    "project_id": "seattle-info",
+    "storage_bucket": "seattle-info.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1060028705881:android:7cc8913806cb94e5eed548",
+        "android_client_info": {
+          "package_name": "com.example.seattle_info_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1060028705881-da24459qmsr2fi11201ga17npst0sach.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.seattle_info_mobile",
+            "certificate_hash": "c54f8f00fe35857e39148bfec23b55f2b8680a8e"
+          }
+        },
+        {
+          "client_id": "1060028705881-hqrmqid8i2p4qd8ej1ob81elg9381sfn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnxFPjx7KPH_6csXtTnzzTsCvp8joBaAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1060028705881-hqrmqid8i2p4qd8ej1ob81elg9381sfn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
