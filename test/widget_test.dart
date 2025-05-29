@@ -7,24 +7,30 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:seattle_info_mobile/main.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Added
+import 'package:seattle_info_mobile/src/app/app.dart'; // Changed import
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App smoke test: pumps MyApp and finds a MaterialApp', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    // Ensure Firebase is initialized for tests if it's part of your app's direct startup logic
+    // and not handled by a mock/fake in tests. For this basic test, direct init might be okay.
+    // WidgetsFlutterBinding.ensureInitialized(); // Usually needed if test environment doesn't do it.
+    // await Firebase.initializeApp(); // If your MyApp or its direct dependencies need Firebase on startup.
+                                     // Consider using mocks for Firebase services in unit/widget tests.
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(const ProviderScope(child: MyApp())); // Wrapped MyApp
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify that our app has a MaterialApp widget.
+    // This is a very basic check to ensure the app initializes.
+    expect(find.byType(MaterialApp), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // The old counter test is no longer relevant:
+    // expect(find.text('0'), findsOneWidget);
+    // expect(find.text('1'), findsNothing);
+    // await tester.tap(find.byIcon(Icons.add));
+    // await tester.pump();
+    // expect(find.text('0'), findsNothing);
+    // expect(find.text('1'), findsOneWidget);
   });
 }

@@ -1,7 +1,26 @@
+import 'dart:convert'; // For utf8 encoding
+import 'package:crypto/crypto.dart'; // For sha256
+import 'dart:math'; // For random string generation
+
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider; // Hide to avoid conflict if you were to use it directly
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../domain/auth_repository.dart';
+
+// Helper Functions for Nonce
+// Generates a cryptographically secure random string for the nonce.
+String _generateRandomString([int length = 32]) {
+  final random = Random.secure();
+  final values = List<int>.generate(length, (i) => random.nextInt(256));
+  return base64Url.encode(values); // base64Url is safe for HTTP headers and other uses
+}
+
+// Creates a SHA-256 hash of the given input string.
+String _sha256Hash(String input) {
+  final bytes = utf8.encode(input);
+  final digest = sha256.convert(bytes);
+  return digest.toString();
+}
 
 class FirebaseAuthRepository implements AuthRepository {
   final FirebaseAuth _firebaseAuth;
@@ -104,44 +123,44 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   Future<User?> signInWithApple() async {
-    // Apple Sign-In is more complex and requires specific setup for each platform (iOS/macOS/Web)
-    // and testing on actual Apple devices or simulators.
-    // This is a placeholder implementation.
-    print('Attempting Sign in with Apple (placeholder)...');
+    print('Attempting Sign in with Apple...');
     try {
+      // 1. Generate original nonce
+      final originalNonce = _generateRandomString();
+      // 2. Hash the original nonce
+      final hashedNonce = _sha256Hash(originalNonce);
+
       final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
-        // webAuthenticationOptions: WebAuthenticationOptions(  // For web
-        //   clientId: 'YOUR_CLIENT_ID_FROM_FIREBASE_OR_APPLE_DEV_CONSOLE',
-        //   redirectUri: Uri.parse('YOUR_REDIRECT_URI'),
+        nonce: hashedNonce, // Pass the hashed nonce to Apple
+        // webAuthenticationOptions for web if you configure it:
+        // webAuthenticationOptions: WebAuthenticationOptions(
+        //   clientId: 'YOUR_SERVICE_ID_FROM_APPLE_DEVELOPER_CONSOLE',
+        //   redirectUri: Uri.parse('YOUR_WEB_REDIRECT_URI_CONFIGURED_IN_FIREBASE_AND_APPLE'),
         // ),
       );
-
-      // Ensure firebase_auth is imported (it should be already)
-      // import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
-      // Then use fb_auth.AppleAuthProvider or just AppleAuthProvider if no conflict
-
-      final String? rawNonce = credential.nonce; // Capture nonce if available
       
       final OAuthCredential oauthCredential = OAuthCredential(
-        providerId: AppleAuthProvider.PROVIDER_ID, // Static constant for 'apple.com'
-        signInMethod: AppleAuthProvider.APPLE_SIGN_IN_METHOD, // Static constant for 'apple.com'
-        idToken: credential.identityToken,
-        rawNonce: rawNonce, // Pass the nonce obtained from Apple
-        accessToken: credential.authorizationCode, 
+        providerId: AppleAuthProvider.PROVIDER_ID,
+        signInMethod: AppleAuthProvider.APPLE_SIGN_IN_METHOD,
+        idToken: credential.identityToken, // This token from Apple should contain the originalNonce if Apple processed it
+        rawNonce: originalNonce, // Pass the original (unhashed) nonce to Firebase
+        accessToken: credential.authorizationCode,
       );
        
       final userCredential = await _firebaseAuth.signInWithCredential(oauthCredential);
       return userCredential.user;
     } on FirebaseAuthException catch (e) {
-      print('FirebaseAuthException on Apple signIn: ${e.message}');
+      print('FirebaseAuthException on Apple signIn: ${e.code} - ${e.message}');
+      return null;
+    } on SignInWithAppleAuthorizationException catch (e) {
+      print('SignInWithAppleAuthorizationException on Apple signIn: ${e.code} - ${e.message}');
       return null;
     } catch (e) {
-      print('Generic/Apple exception on Apple signIn: $e');
-      // e.g. SignInWithAppleAuthorizationException
+      print('Generic exception on Apple signIn: $e');
       return null;
     }
   }
