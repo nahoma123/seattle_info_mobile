@@ -46,6 +46,12 @@ dependencies:
   # For .env file loading (optional, Flutter has other ways for config)
   # flutter_dotenv: ^5.1.0
 
+  # Firebase
+  firebase_core: ^2.27.0
+  firebase_auth: ^4.17.8
+  google_sign_in: ^6.2.1
+  sign_in_with_apple: ^5.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
