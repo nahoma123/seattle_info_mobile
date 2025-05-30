@@ -142,7 +142,7 @@ class FirebaseAuthRepository implements AuthRepository {
         //   redirectUri: Uri.parse('YOUR_WEB_REDIRECT_URI_CONFIGURED_IN_FIREBASE_AND_APPLE'),
         // ),
       );
-      
+
       final OAuthCredential oauthCredential = OAuthCredential(
         providerId: AppleAuthProvider.PROVIDER_ID,
         signInMethod: AppleAuthProvider.APPLE_SIGN_IN_METHOD,
@@ -150,7 +150,7 @@ class FirebaseAuthRepository implements AuthRepository {
         rawNonce: originalNonce, // Pass the original (unhashed) nonce to Firebase
         accessToken: credential.authorizationCode,
       );
-       
+
       final userCredential = await _firebaseAuth.signInWithCredential(oauthCredential);
       return userCredential.user;
     } on FirebaseAuthException catch (e) {

@@ -17,7 +17,7 @@ final authStateChangesProvider = StreamProvider<User?>((ref) {
 // StateNotifier for AuthController (manages auth state and actions)
 class AuthController extends StateNotifier<AsyncValue<User?>> {
   final AuthRepository _authRepository;
-  
+
   AuthController({required AuthRepository authRepository})
       : _authRepository = authRepository,
         super(const AsyncValue.loading()) {
@@ -31,7 +31,7 @@ class AuthController extends StateNotifier<AsyncValue<User?>> {
   }
 
   User? get currentUser => _authRepository.getCurrentUser();
-  
+
   Future<void> signInWithEmailPassword(String email, String password) async {
     state = const AsyncValue.loading();
     try {

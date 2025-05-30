@@ -5,6 +5,8 @@ import '../features/auth/application/auth_controller.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/splash_screen.dart';
 import '../features/home/presentation/home_screen.dart';
+import '../features/listings/presentation/listing_detail_screen.dart';
+import '../features/listings/presentation/create_listing_screen.dart'; // Added
 // Import user_controller if needed for redirection logic based on AppUser details
 // import '../features/user/application/user_controller.dart';
 
@@ -29,6 +31,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/home',
         builder: (context, state) => const HomeScreen(),
       ),
+      GoRoute(
+        path: '/listing/:id', // Use :id for path parameter
+        builder: (context, state) {
+          final listingId = state.pathParameters['id']!;
+          return ListingDetailScreen(listingId: listingId);
+        },
+      ),
+     GoRoute(
+       path: '/create-listing',
+       builder: (context, state) => const CreateListingScreen(),
+     ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final bool loggedIn = authState.maybeWhen(
@@ -53,7 +66,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       if (loggedIn && loggingIn) {
         return '/home';
       }
-      
+
       // No redirect needed
       return null;
     },
