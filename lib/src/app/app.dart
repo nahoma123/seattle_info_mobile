@@ -71,7 +71,7 @@ class MyApp extends ConsumerWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       ),
 
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData( // <--- MODIFIED HERE
         elevation: 2.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
