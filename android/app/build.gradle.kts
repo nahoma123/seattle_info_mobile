@@ -7,11 +7,11 @@ plugins {
 android {
     namespace = "com.example.seattle_info_mobile"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "29.0.13113456"
 
     defaultConfig {
         applicationId = "com.example.seattle_info_mobile"
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
